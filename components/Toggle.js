@@ -25,7 +25,7 @@ const Toggle = ({currentState, updateState}) => {
 
   return (
 
-    <div className='flex felx-wrap gap-4 items-center'>
+    <div className='flex flex-wrap gap-4 '>
     <p className="text-2xl text-slate-800">Metric</p>
        <div>
         <label className="switch">

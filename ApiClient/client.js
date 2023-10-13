@@ -4,52 +4,58 @@ import { Day } from "@/classes/dayClass";
 export class ApiClient {
   async getWeather(lat, lon, key) {
     // I've ended up putting it all in one massive function - instead I should have done the request as one small function, with a try / catch, and then the other functionality could have been added subsequently.
-  
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=53.3806626&lon=-1.4702278&appid=${key}`
-      );
 
-      const nextEightDays = response.data.daily;
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${key}`
+    );
 
-      
-      console.log(nextEightDays);
+    // const response = await axios.get(
+    //   `https://api.openweathermap.org/data/3.0/onecall?lat=53.3806626&lon=-1.4702278&appid=${key}`
+    // );
 
-      const forecastArray = [];
+    // alfie code:
+    //   if (!response.data.daily) {
+    //     throw new Error()
+    //   }
 
-      nextEightDays.forEach((day) => {
+    const nextEightDays = response.data.daily;
 
-        // get date and day from openweather's seconds
-        const milliseconds = day.dt * 1000;
-        const date = new Date(milliseconds);
-        const ddmm = date.toLocaleDateString("en-gb", {
-          day: "numeric",
-          month: "short",
-        });
-        const weekday = date.toLocaleDateString("en-gb", { weekday: "long" });
+    console.log(nextEightDays);
 
-        // capitalise summary
-        const summary = this.capitalise(day.weather[0].description);
+    const forecastArray = [];
 
-        const icon = this.getIcon(day.weather[0].icon);
-
-        // create a new day object for each day and add it to the forecast array
-        const item = new Day(
-          day.dt,
-          weekday,
-          ddmm,
-          summary,
-          day.temp.max,
-          day.temp.min,
-          day.wind_speed,
-          icon
-        );
-        forecastArray.push(item);
+    nextEightDays.forEach((day) => {
+      // get date and day from openweather's seconds
+      const milliseconds = day.dt * 1000;
+      const date = new Date(milliseconds);
+      const ddmm = date.toLocaleDateString("en-gb", {
+        day: "numeric",
+        month: "short",
       });
+      const weekday = date.toLocaleDateString("en-gb", { weekday: "long" });
 
-      // console.log(forecastArray)
+      // capitalise summary
+      const summary = this.capitalise(day.weather[0].description);
 
-      return forecastArray;
+      const icon = this.getIcon(day.weather[0].icon);
 
+      // create a new day object for each day and add it to the forecast array
+      const item = new Day(
+        day.dt,
+        weekday,
+        ddmm,
+        summary,
+        day.temp.max,
+        day.temp.min,
+        day.wind_speed,
+        icon
+      );
+      forecastArray.push(item);
+    });
+
+    // console.log(forecastArray)
+
+    return forecastArray;
   }
 
   capitalise(sentence) {
@@ -63,13 +69,28 @@ export class ApiClient {
   }
 
   async getLatAndLon(city, key) {
-    const response = await axios.get(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${key}`
-    );
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${key}`
+      );
 
-    const lat = response.data[0].lat;
-    const lon = response.data[0].lon;
+      const lat = response.data[0].lat;
+      const lon = response.data[0].lon;
 
-    console.log(`lat is ${lat} and lon is ${lon}`);
+      const latLonObject = {
+        latitude: 0,
+        longitude: 0
+      }
+
+      latLonObject.latitude = response.data[0].lat;
+      latLonObject.longitude = response.data[0].lon;
+
+    //   console.log(`lat is ${lat} and lon is ${lon}`);
+    //   console.log(latLonObject)
+
+      return latLonObject
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

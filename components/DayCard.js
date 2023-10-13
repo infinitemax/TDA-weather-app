@@ -16,7 +16,7 @@ const DayCard = ({day, date, summary, maxTemp, minTemp, windSpeed, icon, units})
 
   return (
     <div className='shadow-md px-4 py-6 rounded-md bg-purple-200'>
-        <h2>{day} </h2>
+        <h2>{day}</h2>
         <h3>{date}</h3>
         <h3>{summary}</h3>
         <p>Max temp: {determineTemp(maxTemp, units)}</p>

@@ -4,29 +4,44 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-const CityInput = () => {
+const OldCityInput = () => {
 
     const key = process.env.NEXT_PUBLIC_APIKEY;
 
     const apiClient = new ApiClient;
 
     
-    const [latitude, setLatitude] = useState(0)
-    const [longitude, setLongitude] = useState(0)
+    const [latitudeAndLongitude, setLatitudeAndLongitude] = useState(null)
+
 
     const [formValues, setFormValues] = useState("")
     const [targetCity, setTargetCity] = useState("")
     
     
-    const handleCityInput = (event, inputText) => {
+    const handleCityInput = async (event, inputText) => {
+  
         event.preventDefault();
         setTargetCity(formValues)
         setFormValues("");
         
         console.log(`making api call for city name: ${inputText}`)
 
-        apiClient.getLatAndLon(inputText)
+        const coordinateData = await apiClient.getLatAndLon(inputText, key)
+
+        console.log(coordinateData)
+
+        setLatitudeAndLongitude(coordinateData)
+
     }
+    
+    useEffect(() => {
+       
+            console.log('updated')
+            console.log(latitudeAndLongitude)
+        
+    }, [latitudeAndLongitude])
+
+
 
     // useEffect(() => {
     //     console.log(targetCity);
@@ -49,6 +64,19 @@ const CityInput = () => {
             <button type='submit'>Go!</button>
         </form>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // <div className='cityInput'>
@@ -92,4 +120,4 @@ const CityInput = () => {
   )
 }
 
-export default CityInput
+export default OldCityInput
