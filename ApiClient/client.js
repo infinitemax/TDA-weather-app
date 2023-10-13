@@ -9,9 +9,6 @@ export class ApiClient {
       `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${key}`
     );
 
-    // const response = await axios.get(
-    //   `https://api.openweathermap.org/data/3.0/onecall?lat=53.3806626&lon=-1.4702278&appid=${key}`
-    // );
 
     // alfie code:
     //   if (!response.data.daily) {
